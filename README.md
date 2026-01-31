@@ -7,13 +7,13 @@ Elle permet de gérer des produits, suivre les stocks en temps réel et enregist
 ### 🔐 Authentification
 | Connexion | Création de Compte |
 |-----------|--------------------|
-| ![Login Page](screenshots/login.png) | ![Register Page](screenshots/create_account.png) |
+| ![Login Page](app/screenshots/login.png) | ![Register Page](app/screenshots/create_account.png) |
 
 ### 📊 Tableau de Bord & Stocks
-![Dashboard](screenshots/dashboard.png)
+![Dashboard](app/screenshots/dashboard.png)
 
 ### 📜 Historique des Transactions
-![Transactions](screenshots/transactions.png)
+![Transactions](app/screenshots/transactions.png)
 
 ## ✨ Features
 
