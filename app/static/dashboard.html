@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StockMaster Pro - Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
+    <style>
+        body { background-color: #f4f7f6; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .card { border-radius: 12px; border: none; margin-bottom: 1.5rem; }
+        .shadow-custom { box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        
+        /* Alertes de stock */
+        .stock-low { background-color: #fff5f5 !important; color: #a94442; border-left: 5px solid #d9534f; font-weight: bold; }
+        
+        /* Badges pour l'historique */
+        .badge-sale { background-color: #ffdce0; color: #af233a; padding: 4px 10px; border-radius: 20px; font-size: 0.85em; font-weight: 600; }
+        .badge-restock { background-color: #dcffeb; color: #1e7e34; padding: 4px 10px; border-radius: 20px; font-size: 0.85em; font-weight: 600; }
+        
+        /* Stats Cards */
+        .stat-card { transition: transform 0.2s; }
+        .stat-card:hover { transform: translateY(-5px); }
+    </style>
+</head>
+<body>
+
+<div class="container py-4">
+    
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary fw-bold"><i class="bi bi-speedometer2"></i> StockMaster Pro</h2>
+        <button onclick="logout()" class="btn btn-outline-danger shadow-sm">
+            <i class="bi bi-box-arrow-right"></i> Déconnexion
+        </button>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card stat-card bg-primary text-white shadow-custom">
+                <div class="card-body">
+                    <h6>Total Produits</h6>
+                    <h3 id="stat-total-products" class="mb-0">0</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card stat-card bg-success text-white shadow-custom">
+                <div class="card-body">
+                    <h6>Valeur Totale</h6>
+                    <h3 id="stat-total-value" class="mb-0">0 €</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card stat-card bg-warning text-dark shadow-custom">
+                <div class="card-body">
+                    <h6>Alertes Stock</h6>
+                    <h3 id="stat-low-stock" class="mb-0">0</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-custom">
+        <div class="card-header bg-white fw-bold">
+            <i class="bi bi-plus-circle"></i> Ajouter un Nouveau Produit
+        </div>
+        <div class="card-body">
+            <form id="addProductForm" class="row g-3">
+                <div class="col-md-3">
+                    <input type="text" id="newName" class="form-control" placeholder="Nom du produit" required>
+                </div>
+                <div class="col-md-3">
+                    <input type="text" id="newDesc" class="form-control" placeholder="Description">
+                </div>
+                <div class="col-md-2">
+                    <input type="number" id="newPrice" class="form-control" placeholder="Prix (€)" step="0.01" required>
+                </div>
+                <div class="col-md-2">
+                    <input type="number" id="newQty" class="form-control" placeholder="Quantité" required>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">Ajouter</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card shadow-custom">
+        <div class="card-header bg-white fw-bold">
+            <i class="bi bi-table"></i> Inventaire Actuel
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0 align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Nom</th>
+                            <th>Description</th>
+                            <th>Prix</th>
+                            <th>Stock</th>
+                            <th style="width: 320px;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="product-table-body">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-custom border-top border-dark border-4">
+        <div class="card-header bg-white fw-bold">
+            <i class="bi bi-journal-text"></i> Dernières Transactions
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-sm mb-0">
+                    <thead class="table-secondary">
+                        <tr>
+                            <th>Date</th>
+                            <th>Produit ID</th>
+                            <th>Type</th>
+                            <th>Quantité</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transaction-history-body">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="/static/auth.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        loadProducts();      // Charge la liste et les stats
+        loadTransactions();  // Charge l'historique
+    });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            window.location.href = "/login";
+            return;
+        }
+        
+        loadProducts();      
+        loadTransactions(); 
+    });
+</script>
+
+</body>
+</html>
